@@ -3,7 +3,7 @@ import requests
 import urllib.parse
 from bs4 import BeautifulSoup
 import re
-from openpyxl import Workbook
+#from openpyxl import Workbook
 import csv
 import io
 import http.client
@@ -121,7 +121,7 @@ def parse_additional_info(site):
     site['connect.facebook'] = check_presence_text_in_site(raw_html, 'connect.facebook')
     site = collect_contacts(site, raw_html)
     return site
-
+"""
 def output_sites_info_to_xlsx(sites_info):
     wb = Workbook()
     sheet = wb.active
@@ -162,6 +162,8 @@ def output_sites_info_to_xlsx(sites_info):
     save_time = time.time()
     print('Сохранил как {}.xlsx'.format(save_time))
     wb.save('{}.xlsx'.format(save_time))
+"""
+
 
 def output_sites_to_csv(sites_info):
     output_io = io.StringIO()
