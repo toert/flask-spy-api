@@ -27,6 +27,9 @@
     </nav>
 
     <div class="container">
+      <p>Последнее обновление {{ last_time }}</p>
+      <a href="/load" class="btn btn-primary" role="button" download>Скачать файл</a>
+      <br><hr>
       <form method="POST">
         <div class="form-group">
           <input name="login" class="form-control" value="{{ login }}" placeholder="Логин" autofocus>

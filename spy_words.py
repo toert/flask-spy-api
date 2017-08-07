@@ -7,9 +7,11 @@ from openpyxl import Workbook
 import csv
 import io
 import http.client
+from datetime import datetime
+from pytz import timezone
 http.client._MAXHEADERS = 1000
 
-
+LAST_UPDATE_TIME = '- никогда'
 LOGIN = 'ivan-porch@bk.ru'
 PASSWORD = '5379200f47735ff99df8eae75ac98845'
 API_URL = 'http://api.spywords.ru'
@@ -219,10 +221,13 @@ def parse_info(search_words, login, password, limit):
             print('Код: {}'.format(raw_respond))
             continue
         keyword_info[word] = get_competitors(most_popular_site['Domain'], limit)
+    #print(keyword_info)
     for keyword, list_of_sites in keyword_info.items():
         for site in list_of_sites:
             site = parse_additional_info(site)
     #print(keyword_info)
+    global LAST_UPDATE_TIME
+    LAST_UPDATE_TIME = datetime.strftime(datetime.now(timezone('Europe/Moscow')), '%H:%M:%S')
     return output_sites_info_to_xlsx(keyword_info)
 
 

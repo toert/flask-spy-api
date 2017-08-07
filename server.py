@@ -12,7 +12,7 @@ def load():
 
 @app.route('/', methods=['GET'])
 def form():
-    return render_template('form.html', text=('', ''))
+    return render_template('form.html', text=('', ''), last_time=LAST_UPDATE_TIME)
 
 @app.route('/', methods=['POST'])
 def typograf():
@@ -28,10 +28,13 @@ def typograf():
         # This is the key: Set the right header for the response
         # to be downloaded, instead of just printed on the browser
         #response.headers["Content-Disposition"] = "attachment; filename=result.csv"
+        global LAST_UPDATE_TIME
+        LAST_UPDATE_TIME = datetime.strftime(datetime.now(timezone('Europe/Moscow')), '%H:%M:%S')
         return send_file(output_text)
     else:
         output_text = 'Неправильный пароль!'
-        return render_template('form.html', text=(input_text, output_text), token=password, login=login, limit=limit)
+        return render_template('form.html', text=(input_text, output_text), token=password, login=login, limit=limit,
+                last_time=LAST_UPDATE_TIME)
 
 
 if __name__ == "__main__":
