@@ -20,14 +20,9 @@ def typograf():
     password = request.form['token']
     limit = request.form['limit']
     input_text = request.form['text']
-    words = [word for word in input_text.split('\r\n')]
+    words = list(set([word for word in input_text.split('\r\n')]))
     if login and password and input_text:
         output_text = parse_info(words, login, password, limit)
-        #return render_template('form.html', text=(input_text, output_text), token=password, login=login, limit=limit)
-        #response = make_response(output_text)
-        # This is the key: Set the right header for the response
-        # to be downloaded, instead of just printed on the browser
-        #response.headers["Content-Disposition"] = "attachment; filename=result.csv"
         global LAST_UPDATE_TIME
         LAST_UPDATE_TIME = datetime.strftime(datetime.now(timezone('Europe/Moscow')), '%H:%M:%S')
         return send_file(output_text)
