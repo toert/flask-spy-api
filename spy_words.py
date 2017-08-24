@@ -1,4 +1,3 @@
-import time
 import requests
 import urllib.parse
 from bs4 import BeautifulSoup
@@ -9,6 +8,7 @@ import io
 import http.client
 from datetime import datetime
 from pytz import timezone
+
 http.client._MAXHEADERS = 1000
 
 LAST_UPDATE_TIME = '- никогда'
@@ -83,8 +83,6 @@ def get_url(url, params):
 def send_request_to_API(url, params):
     params = urllib.parse.urlencode(params, encoding='cp1251')
     url = '{}?{}'.format(url, params)
-    #url = get_url(url, params)
-    #print(url)
     return requests.get(url).text
 
 
@@ -124,6 +122,7 @@ def parse_additional_info(site):
     site = collect_contacts(site, raw_html)
     return site
 
+
 def output_sites_info_to_xlsx(sites_info):
     wb = Workbook()
     sheet = wb.active
@@ -161,18 +160,15 @@ def output_sites_info_to_xlsx(sites_info):
             sheet.cell(row=id + 3, column=13).value = site['AvgPos']
             sheet.cell(row=id + 3, column=14).value = site['AdTraf']
             id = id + 1
-    #save_time = time.time()
-    #print('Сохранил как {}.xlsx'.format(save_time))
     wb.save('result.xlsx')
     return 'result.xlsx'
-
 
 
 def output_sites_to_csv(sites_info):
     output_io = io.StringIO()
     fieldnames = ['id', 'keyword', 'Domain', 'rtrg', 'connect.facebook',
                   'phone', 'e-mail', 'Competition Level, %', 'KeyOverlap',
-                  'Unique Keys', 'KeysTot', 'TotUniqAds', 'AvgPos','AdTraf']
+                  'Unique Keys', 'KeysTot', 'TotUniqAds', 'AvgPos', 'AdTraf']
     writer = csv.DictWriter(output_io, fieldnames=fieldnames)
     writer.writeheader()
     id = 1
@@ -187,7 +183,6 @@ def output_sites_to_csv(sites_info):
             writer.writerow(site)
             id = id + 1
     return output_io.getvalue().strip('\r\n')
-
 
 
 def list_to_string(list):
@@ -210,26 +205,16 @@ def parse_info(search_words, login, password, limit):
             'login': login,
             'token': password,
         })
-        # print(raw_respond)
         respond = convert_respond_to_dict(raw_respond)
         if respond:
             most_popular_site = max(respond, key=lambda site: int(site['KeysTot'].replace(' ', '')))
-            print('API прислал {} сайтов по запросу {}, используем {}'
-                  .format(len(respond), word, most_popular_site['Domain']))
         else:
-            print('API ничего не прислал по запросу {}'.format(word))
-            print('Код: {}'.format(raw_respond))
             continue
         keyword_info[word] = get_competitors(most_popular_site['Domain'], limit)
-    #print(keyword_info)
     for keyword, list_of_sites in keyword_info.items():
         for site in list_of_sites:
             site = parse_additional_info(site)
-    #print(keyword_info)
-    global LAST_UPDATE_TIME
-    LAST_UPDATE_TIME = datetime.strftime(datetime.now(timezone('Europe/Moscow')), '%H:%M:%S')
     return output_sites_info_to_xlsx(keyword_info)
-
 
 
 if __name__ == "__main__":
@@ -243,7 +228,6 @@ if __name__ == "__main__":
             'login': LOGIN,
             'token': PASSWORD,
         })
-        #print(raw_respond)
         respond = convert_respond_to_dict(raw_respond)
         if respond:
             most_popular_site = max(respond, key=lambda site: int(site['KeysTot'].replace(' ', '')))

@@ -1,6 +1,5 @@
-from flask import Flask, render_template, request, make_response, send_file
+from flask import Flask, render_template, request, send_file
 from spy_words import *
-
 
 app = Flask(__name__)
 
@@ -13,6 +12,7 @@ def load():
 @app.route('/', methods=['GET'])
 def form():
     return render_template('form.html', text=('', ''), last_time=LAST_UPDATE_TIME)
+
 
 @app.route('/', methods=['POST'])
 def typograf():
@@ -27,9 +27,9 @@ def typograf():
         LAST_UPDATE_TIME = datetime.strftime(datetime.now(timezone('Europe/Moscow')), '%H:%M:%S')
         return send_file(output_text)
     else:
-        output_text = 'Неправильный пароль!'
+        output_text = 'Неправильное заполнение данных!'
         return render_template('form.html', text=(input_text, output_text), token=password, login=login, limit=limit,
-                last_time=LAST_UPDATE_TIME)
+                               last_time=LAST_UPDATE_TIME)
 
 
 if __name__ == "__main__":
